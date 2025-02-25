@@ -17,6 +17,6 @@ grep -E "^chr([1-9]|1[0-9]|2[0-2])\s" genome.chrom.sizes > autosomes.chrom.sizes
 
 To run this script, you will need bcftools, bedtools and snakemake installed. Modify -j according to your needs: 
 ```
-snakemake -s FilterOut_CDS.snakemake  -j 5 --rerun-incomplete
+snakemake -s FilterOutCDS.snakemake  -j 5 --rerun-incomplete
 ```
 
