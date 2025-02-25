@@ -4,9 +4,8 @@ To start, you need to download the corresponding bed file from here (https://gen
 
 ```
 wget -O coding_exons.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=2468584971_w04caEyPqEtuFSwSq503otVCTDlU&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbQual=cds&fbDownBases=200&hgta_doGetBed=get+BED"
- wget -O 3utr.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=2468523179_EVZ2MavoVDBXYC8QRlkhHknaI6vA&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbQual=utr3&fbDownBases=200&hgta_doGetBed=get+BED"
+wget -O 3utr.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=2468523179_EVZ2MavoVDBXYC8QRlkhHknaI6vA&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbQual=utr3&fbDownBases=200&hgta_doGetBed=get+BED"
 wget -O 5utr.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=2468523179_EVZ2MavoVDBXYC8QRlkhHknaI6vA&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbQual=utr5&fbDownBases=200&hgta_doGetBed=get+BED"
-
 wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes -O genome.chrom.sizes
 
 ```
