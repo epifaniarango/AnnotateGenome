@@ -1,0 +1,77 @@
+# Snakemake Pipeline to keep only Neutral Regions in VCF files
+
+# Define input files
+coding_exons = "coding_exons.bed"
+utr5_exons = "5utr.bed"
+utr3_exons = "3utr.bed"
+chrom_sizes = "autosomes.chrom.sizes"
+
+# Define the chromosomes to process (autosomes only)
+chromosomes = [str(i) for i in range(1, 23)]
+
+# Set paths for directories
+VCF_DIR = "/your_directory"
+
+rule all:
+    input: 
+        expand("bed_per_chr/chr{chrom}_excluded_10kb.bed", chrom=chromosomes),
+        expand("filtered_vcf/chr{chrom}_neutral.vcf.gz", chrom=chromosomes),
+        expand("filtered_vcf/chr{chrom}_neutral.vcf.gz.tbi", chrom=chromosomes)
+
+
+
+# Rule 1: Merge Coding + UTR regions
+rule merge_excluded_regions:
+    output: "excluded_regions.bed"
+    shell:
+        """
+        cat {coding_exons} {utr5_exons} {utr3_exons} | \
+        sort -k1,1 -k2,2n | bedtools merge > {output}
+        """
+
+# Rule 2: Filter excluded regions to keep only autosomes
+rule filter_excluded_regions:
+    input: "excluded_regions.bed"
+    output: "excluded_regions_autosomes.bed"
+    shell:
+        """
+        awk '$1 ~ /^chr([1-9]|1[0-9]|2[0-2])$/ {{print $0}}' {input} > {output}
+        """
+
+
+# Rule 3: Expand regions by 10kb, making sure we stay within chromosome boundaries
+rule expand_excluded_regions:
+    input: "excluded_regions_autosomes.bed"
+    output: "excluded_regions_autosomes_10kb.bed"
+    shell:
+        """
+        bedtools slop -i {input} -g {chrom_sizes} -b 10000 > {output}
+        """
+
+# Rule 4: Split BED file by chromosome
+rule split_bed_by_chromosome:
+    input: "excluded_regions_autosomes_10kb.bed"
+    output: "bed_per_chr/chr{chrom}_excluded_10kb.bed"
+    params:
+        chrom="chr{chrom}"
+    shell:
+        """
+        mkdir -p bed_per_chr
+        awk -v chr="{params.chrom}" '$1 == chr' {input} > {output}
+        """
+
+
+# Rule 5: Filter VCF files per chromosome
+rule filter_vcf_per_chromosome:
+    input:
+        vcf=lambda wildcards: f"{VCF_DIR}/chrom{wildcards.chrom}_filtered.vcf.gz",
+        bed="bed_per_chr/chr{chrom}_excluded_10kb.bed"
+    output:
+        vcf_gz="filtered_vcf/chr{chrom}_neutral.vcf.gz",
+        vcf_tbi="filtered_vcf/chr{chrom}_neutral.vcf.gz.tbi"
+    shell:
+        """
+        mkdir -p filtered_vcf
+        bcftools view -T ^{input.bed} {input.vcf} -Oz -o {output.vcf_gz}
+        tabix -p vcf {output.vcf_gz}
+        """
